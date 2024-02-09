@@ -105,18 +105,19 @@ function App() {
             })
           }
         />
-        <div className="searched-cities mt-3">
+        {/* <div>
           {searchedCities.map((city) => (
             <Button
               key={city}
               variant="success"
-              className="me-2" id="historyBtn"
+              id="historyBtn"
               onClick={() => searchWeather(city)}
             >
               {city}
             </Button>
           ))}
-        </div>
+          </div> */}
+         {/*Componente della cronologia eliminato per mancanza di tempo, ci lavorerò nei prossimi giorni*/}
         <div className="weatherData">
           <CurrentWeather weather={currentWeather} />
           <Forecast forecast={forecast} />

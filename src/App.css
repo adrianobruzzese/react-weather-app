@@ -22,16 +22,17 @@ h1 {
 
 .container {
   display: flex;
+  justify-content: center;
   gap: 35px;
   padding: 30px;
 }
 
 .weatherInput input {
-  width: 92%;
+  width: 90%;
   height: 46px;
   outline: none;
   padding: 0 15px;
-  margin: 10px 0px 20px 0;
+  margin: 10px 0px 10px 0;
   font-size: 1.07rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -50,11 +51,12 @@ h1 {
 }
 
 .weatherInput {
-  width: 550px;
+  width: 300px;
 }
 
 .weatherData {
-  width: 100%;
+  width: 80%;
+  margin-left: 10px;
 }
 
 .locationInput .locationBtn {
@@ -126,14 +128,15 @@ h1 {
 .weatherCards {
   display: flex;
   gap: 20px;
+ 
 }
 
 .weatherCards .card {
   background: #c9d7dd;
   list-style: none;
   color: black;
-  padding: 18px 16px;
-  border-radius: 5px;
+  padding: 18px 22px;
+  border-radius: 7px;
   width: calc(100% / 5);
 }
 
@@ -166,6 +169,11 @@ h1 {
     justify-content: center;
   }
 }
+
+
+
+
+
 
 .App {
   text-align: center;
