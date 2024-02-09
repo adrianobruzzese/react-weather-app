@@ -9,8 +9,7 @@ body {
 }
 
 body {
-
-  background: linear-gradient(to right, #FFF6E9, #FFF3CF, #E8C872);
+  background: linear-gradient(to right, #fff6e9, #fff3cf, #e8c872);
 }
 
 h1 {
@@ -18,7 +17,7 @@ h1 {
   padding: 18px 0;
   text-align: center;
   font-size: 1.75rem;
-  background: #637A9F;
+  background: #637a9f;
 }
 
 .container {
@@ -47,7 +46,7 @@ h1 {
   color: #fff;
   font-size: 1rem;
   border-radius: 5px;
-  background: #637A9F;
+  background: #637a9f;
 }
 
 .weatherInput {
@@ -59,7 +58,7 @@ h1 {
 }
 
 .locationInput .locationBtn {
-  background: #637A9F;
+  background: #637a9f;
 }
 .weatherInput .separator {
   height: 1.5px;
@@ -72,13 +71,26 @@ h1 {
 }
 
 .weatherInput .separator::before {
-  color: #E8C872;
+  color: #e8c872;
   font-size: 1.18rem;
   padding: 0 15px;
 }
 
+#historyBtn {
+  width: 100%;
+  padding: 10px 0;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 5px;
+  background: #637a9f;
+  margin-top: 5px;
+}
+
 .currentWeather {
-  background: #C9D7DD;
+  background: #c9d7dd;
   color: black;
   padding: 20px 70px 20px 20px;
   border-radius: 7px;
@@ -106,30 +118,29 @@ h1 {
   text-transform: capitalize;
 }
 
-.daysForecast h2{
-font-size: 1.5rem;
-margin: 20px 0;
+.daysForecast h2 {
+  font-size: 1.5rem;
+  margin: 20px 0;
 }
 
-.weatherCards{
-    display: flex;
-    gap: 20px;
+.weatherCards {
+  display: flex;
+  gap: 20px;
 }
 
-.weatherCards .card{
-    background: #C9D7DD;
-    list-style: none;
-    color: black;
-    padding: 18px 16px;
-    border-radius: 5px;
-    width: calc(100% / 5);
+.weatherCards .card {
+  background: #c9d7dd;
+  list-style: none;
+  color: black;
+  padding: 18px 16px;
+  border-radius: 5px;
+  width: calc(100% / 5);
 }
 
-.weatherCards .card img{
-    max-width: 70px;
-    margin: 5px 0 -12px 0;
+.weatherCards .card img {
+  max-width: 70px;
+  margin: 5px 0 -12px 0;
 }
-
 
 @media (max-width: 768px) {
   .container {
@@ -137,7 +148,8 @@ margin: 20px 0;
     gap: 30px;
   }
 
-  .weatherInput, .weatherData {
+  .weatherInput,
+  .weatherData {
     width: 100%;
   }
 
@@ -152,11 +164,8 @@ margin: 20px 0;
     display: flex;
     align-items: center;
     justify-content: center;
- 
   }
 }
-
-
 
 .App {
   text-align: center;

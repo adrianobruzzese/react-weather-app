@@ -2,26 +2,26 @@ import React, { useState } from 'react';
 import WeatherInput from './components/WeatherInput';
 import CurrentWeather from './components/CurrentWeather';
 import Forecast from './components/Forecast';
-import { Button } from 'react-bootstrap'; 
+import { Button } from 'react-bootstrap';
 import './App.css';
 
 function App() {
   const [currentWeather, setCurrentWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
-  const [searchedCities, setSearchedCities] = useState([]); // Aggiunto per tenere traccia delle città cercate, forse rimuovere se non funziona
+  const [searchedCities, setSearchedCities] = useState([]);
 
   const API_KEY = '194b9db0252039b9150907ebf9577786';
 
-  const searchWeather = (searchQuery) => {
+  const searchWeather = (searchQuery, onSuccess) => {
+    // Aggiunto parametro onSuccess
     if (typeof searchQuery === 'string') {
-      // La ricerca è basata sul nome della città
       const GEOCODING_API_URL = `http://api.openweathermap.org/geo/1.0/direct?q=${searchQuery}&limit=1&appid=${API_KEY}`;
       fetch(GEOCODING_API_URL)
         .then((res) => res.json())
         .then((data) => {
           if (data && data.length > 0) {
             const { lat, lon, name } = data[0];
-            fetchWeatherDetails(name, lat, lon);
+            fetchWeatherDetails(name, lat, lon, onSuccess); // Passo onSuccess a fetchWeatherDetails
           } else {
             alert('Città non trovata.');
           }
@@ -31,16 +31,31 @@ function App() {
       searchQuery.latitude &&
       searchQuery.longitude
     ) {
-      // La ricerca è basata sulle coordinate. Implementare reverse geocatching per ottenere il nome città dopo
-      fetchWeatherDetails(
-        'Posizione attuale',
-        searchQuery.latitude,
-        searchQuery.longitude
-      );
+      const REVERSE_GEOCODING_API_URL = `http://api.openweathermap.org/geo/1.0/reverse?lat=${searchQuery.latitude}&lon=${searchQuery.longitude}&limit=1&appid=${API_KEY}`;
+      fetch(REVERSE_GEOCODING_API_URL)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.length > 0) {
+            const { name } = data[0];
+            fetchWeatherDetails(
+              name,
+              searchQuery.latitude,
+              searchQuery.longitude,
+              onSuccess
+            ); // Passa onSuccess ->
+          } else {
+            fetchWeatherDetails(
+              'Posizione sconosciuta',
+              searchQuery.latitude,
+              searchQuery.longitude
+            );
+          }
+        });
     }
   };
 
-  const fetchWeatherDetails = (cityName, lat, lon) => {
+  const fetchWeatherDetails = (cityName, lat, lon, onSuccess) => {
+    // Aggiunto parametro onSuccess
     const WEATHER_API_URL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=it`;
 
     fetch(WEATHER_API_URL)
@@ -70,6 +85,9 @@ function App() {
             }));
 
           setForecast(dailyForecast);
+          if (onSuccess) {
+            onSuccess(cityName); // Passo il nome della città se la ricerca ha successo
+          }
         }
       });
   };
@@ -78,14 +96,21 @@ function App() {
     <div className="App">
       <h1>Dashboard Meteo</h1>
       <div className="container">
-        <WeatherInput onSearch={searchWeather} />
-        {/* Bottoni delle città cercate */}
+        <WeatherInput
+          onSearch={(query) =>
+            searchWeather(query, (cityName) => {
+              if (!searchedCities.includes(cityName)) {
+                setSearchedCities([...searchedCities, cityName]); // Aggiorna la cronologia solo se la ricerca ha successo
+              }
+            })
+          }
+        />
         <div className="searched-cities mt-3">
           {searchedCities.map((city) => (
             <Button
               key={city}
               variant="success"
-              className="me-2"
+              className="me-2" id="historyBtn"
               onClick={() => searchWeather(city)}
             >
               {city}

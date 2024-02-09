@@ -1,65 +1,8 @@
-// import React, { useState } from 'react';
-
-// function WeatherInput({ onSearch }) {
-//   const [city, setCity] = useState('');
-
-//   const handleChange = (e) => {
-//     setCity(e.target.value);
-//   };
-
-//   const handleSearch = () => {
-//     onSearch(city);
-//   };
-
-//   // Gestisce il click su Btn della posizione attuale
-//   const handleLocationSearch = () => {
-//     if (navigator.geolocation) {
-//       navigator.geolocation.getCurrentPosition(
-//         (position) => {
-//           const { latitude, longitude } = position.coords;
-//           // Ho provato di tutto ma non sta funzionando, mi sa che mi sono incasinato troppo.
-//           // Logica utilizzata: 
-//           // 1. Richiedo il permesso invocando navigator.geolocation.getCurrentPosition. Il browser mostra all'utente il prompt per richiedere il permesso di accedere alla posizione. Se l'utente concede il permesso, la funzione dovrebbe proseguire e ottenere le coordinate della posizione attuale.
-//           // 2. una volta ottenuta la posizione, la funzione di callback di getCurrentPosition viene eseguita con i dettagli della posizione, inclusi latitudine e longitudine. Questi dati dovrebbero quindi essere utilizzati per effettuare una ricerca meteo basata sulla posizione attuale dell'utente, ma non compare niente né in app né in console
-//         },
-//         (error) => {
-//           console.error("Errore nell'ottenere la posizione", error);
-//           // Errore
-//         }
-//       );
-//     } else {
-//       console.error('Non è stato possibile trovare la tua posizione');
-//       // Informa l'utente che la geolocalizzazione non è disponibile
-//     }
-//   };
-
-//   return (
-//     <div className="weatherInput">
-//       <h3>Ricerca per città...</h3>
-//       <input
-//         className="cityInput"
-//         type="text"
-//         placeholder="E.s. New York, Londra, Tokyo, Foggia"
-//         value={city}
-//         onChange={handleChange}
-//       />
-//       <button className="searchBtn" onClick={handleSearch}>
-//         Cerca
-//       </button>
-//       <div className="separator"></div>
-//       <button className="locationBtn" onClick={handleLocationSearch}>
-//         Utilizza posizione attuale
-//       </button>
-//     </div>
-//   );
-// }
-
-// export default WeatherInput;
-
 import React, { useState } from 'react';
 
 function WeatherInput({ onSearch }) {
   const [city, setCity] = useState('');
+  const [searchHistory, setSearchHistory] = useState([]);
 
   const handleChange = (e) => {
     setCity(e.target.value);
@@ -67,27 +10,31 @@ function WeatherInput({ onSearch }) {
 
   const handleSearch = () => {
     // Chiama onSearch passando il nome della città
-    onSearch(city);
+    onSearch(city, (result) => {
+      // Questa callback viene chiamata solo se la ricerca ha successo
+      if (result && !searchHistory.includes(city)) {
+        setSearchHistory((prevHistory) => [...prevHistory.slice(-4), city]);
+      }
+    });
   };
 
-  // Gestisce il click sul bottone della posizione attuale
   const handleLocationSearch = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          // Invece di loggare o mostrare in console, chiama onSearch con le coordinate
-          // Passa un oggetto con latitudine e longitudine a onSearch
-          onSearch({ latitude, longitude });
+          onSearch({ latitude, longitude }, (result) => {
+            // Gestisci qui la logica per la ricerca basata sulla posizione, se necessario
+          });
         },
         (error) => {
-          // Gestisce eventuali errori durante l'ottenimento della posizione
           console.error("Errore nell'ottenere la posizione", error);
-          alert("Impossibile ottenere la posizione attuale. Verifica i permessi del browser.");
+          alert(
+            'Impossibile ottenere la posizione attuale. Verifica i permessi del browser.'
+          );
         }
       );
     } else {
-      // Informa l'utente che la geolocalizzazione non è disponibile
       console.error('Geolocalizzazione non supportata dal tuo browser.');
       alert('Il tuo browser non supporta la geolocalizzazione.');
     }
@@ -106,13 +53,24 @@ function WeatherInput({ onSearch }) {
       <button className="searchBtn" onClick={handleSearch}>
         Cerca
       </button>
+      <div className="searchHistory">
+        {searchHistory.map((item, index) => (
+          <button
+            key={index}
+            id="historyBtn"
+            onClick={() => onSearch(item, () => {})}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
       <div className="separator"></div>
       <button className="locationBtn" onClick={handleLocationSearch}>
         Utilizza posizione attuale
       </button>
+      
     </div>
   );
 }
 
 export default WeatherInput;
-
